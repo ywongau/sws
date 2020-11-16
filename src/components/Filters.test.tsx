@@ -20,6 +20,7 @@ describe('Filters', () => {
     const select = getByLabelText(container, 'Market');
     expect(select.value).toBe('');
     expect(select.options[0].textContent).toBe('Global');
+    expect(select.options[1].value).toBe('ar');
     expect(select.options[1].textContent).toBe('Argentina');
     expect(select.options[2].textContent).toBe('Australia');
     unmount();

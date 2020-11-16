@@ -1,11 +1,12 @@
 // @ts-nocheck
 /// <reference types="jest"/>
 
-import { coles, woolworths } from '../../mocks/data';
 import {
+  cleanup,
   getByText,
-  render,
+  render
 } from '@testing-library/react';
+import { coles, woolworths } from '../../mocks/data';
 
 import { Companies } from './Companies';
 import React from 'react';
