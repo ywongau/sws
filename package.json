@@ -42,7 +42,10 @@
     "automock": false,
     "setupFiles": [
       "./setupJest.js"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/mocks/styleMock.ts"
+    }
   },
   "keywords": []
 }
