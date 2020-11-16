@@ -14,6 +14,9 @@ const assertScore = (container, key, value) =>
   expect(getByText(container, key).nextSibling.textContent).toBe(value);
   
 describe('app', () => {
+  afterEach(async () => {
+    await cleanup();
+  });
   it('shows details of a company', () => {
     const { container } = render(<Companies companies={[coles]} />);
     getByText(container, 'Coles');

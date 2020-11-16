@@ -3,11 +3,8 @@
 
 import {
   cleanup,
-  findByText,
   fireEvent,
   getByLabelText,
-  getByTestId,
-  queryByTestId,
   render,
 } from '@testing-library/react';
 
@@ -15,6 +12,9 @@ import { Filters } from './Filters';
 import React from 'react';
 
 describe('Filters', () => {
+  afterEach(async () => {
+    await cleanup();
+  });
   it('shows list of countries', () => {
     const { container, unmount } = render(<Filters />);
     const select = getByLabelText(container, 'Market');
