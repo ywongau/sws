@@ -15,9 +15,6 @@ export const search = (
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-site',
     },
     referrerPolicy: 'no-referrer',
     method: 'POST',
