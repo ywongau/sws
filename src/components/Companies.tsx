@@ -1,3 +1,5 @@
+import './Companies.css'
+
 import React from 'react';
 import { pageSize } from '../constants';
 

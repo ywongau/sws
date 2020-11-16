@@ -1,0 +1,11 @@
+.filters {
+  display: flex;
+  margin: 1rem 0;
+}
+.filters label span {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+.filters li {
+  margin-right: 1rem;
+}

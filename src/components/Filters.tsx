@@ -1,10 +1,12 @@
+import './Filters.css'
+
 import React from 'react';
 import { markets } from '../constants';
 
 const marketEntries = Object.entries(markets);
 
-export const Filters = ({ className, onMarketChanged, onSortingChanged }) => (
-  <ul className={className}>
+export const Filters = ({ onMarketChanged, onSortingChanged }) => (
+  <ul className="filters">
     <li>
       <label>
         <span>Market</span>
