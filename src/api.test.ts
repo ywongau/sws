@@ -1,11 +1,12 @@
 // @ts-nocheck
 /// <reference types="jest"/>
-import { coles, woolworths } from './mocks/data';
+
+import { coles, woolworths } from '../mocks/data';
 
 import { endpoint } from './constants';
 import { search } from './api';
+
 const fetchMock = require('jest-fetch-mock');
-console.log(fetchMock);
 const fakeData = {
   data: [woolworths, coles],
   meta: { total_records: 100 },

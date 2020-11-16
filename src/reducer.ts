@@ -31,3 +31,14 @@ const visitors = {
 };
 export const reducer = (state, action) =>
   visitors[action.type](state, action) || state;
+
+export const initialState = {
+  loading: true,
+  error: false,
+  countryCode: '',
+  sortOrder: 'desc',
+  sortField: 'market_cap',
+  companies: [],
+  offset: 0,
+  totalRecords: 0,
+}

@@ -1,38 +1,18 @@
+import { Companies, loading } from './components/Companies';
 import React, { useEffect, useReducer, useRef } from 'react';
-import { markets, pageSize } from './constants';
+import { initialState, reducer } from './reducer';
 
-import { Companies } from './Companies';
-import { reducer } from './reducer';
+import { Filters } from './components/Filters';
+import { pageSize } from './constants';
 import { search } from './api';
 
 interface Props {
   name?: string;
 }
-const marketEntries = Object.entries(markets);
 
-const loading = (
-  <ul className="companies loading" data-testid="loading">
-    {Array(pageSize)
-      .fill(undefined)
-      .map((_, i) => (
-        <li key={i}>
-          <article></article>
-        </li>
-      ))}
-  </ul>
-);
-
+const loadMoreThreshold = 100;
 const App: React.FunctionComponent<Props> = ({ name }) => {
-  const [state, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: false,
-    countryCode: '',
-    sortOrder: 'desc',
-    sortField: 'market_cap',
-    companies: [],
-    offset: 0,
-    totalRecords: 0,
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     let _requestCanceled = false;
@@ -42,9 +22,9 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
       state.sortField,
       state.sortOrder,
       state.countryCode
-    ).then((x) => {
+    ).then(data => {
       if (!_requestCanceled) {
-        dispatch({ type: 'result', payload: x });
+        dispatch({ type: 'result', payload: data });
       }
     }, console.error);
     return () => {
@@ -56,11 +36,11 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current as HTMLElement;
-    const onScroll = (e) => {
+    const onScroll = e => {
       const content = scrollContainer.querySelector('.companies');
       if (
         e.target.scrollTop + scrollContainer.clientHeight >=
-          content.clientHeight &&
+          content.clientHeight - loadMoreThreshold &&
         state.companies.length < state.totalRecords
       ) {
         dispatch({
@@ -76,12 +56,12 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
     };
   }, [state.totalRecords, state.companies.length]);
 
-  const marketChanged = (e) => {
+  const marketChanged = e => {
     const countryCode = e.target.value;
     dispatch({ type: 'countryChanged', payload: countryCode });
   };
 
-  const sortingChanged = (e) => {
+  const sortingChanged = e => {
     const sorting = e.target.value;
     const [sortField, sortOrder] = sorting.split(/\s/);
     dispatch({ type: 'sortingChanged', payload: { sortField, sortOrder } });
@@ -91,34 +71,14 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
     <>
       <header className="main-header">
         <h1>{name}</h1>
-        <ul className="filters">
-          <li>
-            <label>
-              <span>Market</span>
-              <select onChange={marketChanged}>
-                <option value="">Global</option>
-                {marketEntries.map(([code, label]) => (
-                  <option value={code} key={code}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </li>
-          <li>
-            <label>
-              <span>Sort by</span>
-              <select onChange={sortingChanged}>
-                <option value="market_cap desc">Market Cap Descending</option>
-                <option value="market_cap asc">Market Cap Ascending</option>
-              </select>
-            </label>
-          </li>
-        </ul>
+        <Filters
+          className="filters"
+          onMarketChanged={marketChanged}
+          onSortingChanged={sortingChanged}/>
       </header>
       <main ref={scrollContainerRef}>
         <>
-          <Companies companies={state.companies} className="companies" />
+          <Companies companies={state.companies}  />
           {state.loading ? loading : null}
         </>
       </main>

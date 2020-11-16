@@ -10,7 +10,7 @@ import {
   queryByTestId,
   render,
 } from '@testing-library/react';
-import { coles, netease, woolworths } from './mocks/data';
+import { coles, netease, woolworths } from '../mocks/data';
 
 import { App } from './App';
 import React from 'react';
@@ -25,26 +25,6 @@ describe('app', () => {
   afterEach(async () => {
     search.mockReset();
     await cleanup();
-  });
-  it('shows list of countries', () => {
-    const { container, unmount } = render(<App />);
-    const select = getByLabelText(container, 'Market');
-    expect(select.value).toBe('');
-    expect(select.options[0].textContent).toBe('Global');
-    expect(select.options[1].textContent).toBe('Argentina');
-    expect(select.options[2].textContent).toBe('Australia');
-    unmount();
-  });
-  it('shows sorting options', () => {
-    const { container, unmount } = render(<App />);
-    const select = getByLabelText(container, 'Sort by');
-    expect(select.value).toBe('market_cap desc');
-    expect(select.options[0].textContent).toBe('Market Cap Descending');
-    expect(select.options[0].value).toBe('market_cap desc');
-    expect(select.options[0].textContent).toBe('Market Cap Descending');
-    expect(select.options[1].value).toBe('market_cap asc');
-    expect(select.options[1].textContent).toBe('Market Cap Ascending');
-    unmount();
   });
   it('shows loading', () => {
     const { container, unmount } = render(<App />);
@@ -92,6 +72,7 @@ describe('data returned', () => {
   });
 });
 describe('load more', () => {
+  const loadMoreThreshold = 100;
   beforeEach(() => {});
   afterEach(() => {
     search.mockReset();
@@ -111,7 +92,7 @@ describe('load more', () => {
       data: [netease],
       meta: { total_records: 3 },
     });
-    fireEvent.scroll(main, { target: { scrollTop: 180 } });
+    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold } });
 
     getByTestId(container, 'loading');
     expect(search).toHaveBeenCalledWith(2, 24, 'market_cap', 'desc', '');
@@ -126,7 +107,7 @@ describe('load more', () => {
     const companies = container.querySelector('.companies');
     jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
     jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 179 } });
+    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold - 1 } });
 
     expect(search.mock.calls.length).toBe(1);
 
@@ -144,7 +125,7 @@ describe('load more', () => {
     const companies = container.querySelector('.companies');
     jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
     jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 199 } });
+    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold - 1} });
 
     expect(queryByTestId(container, 'loading')).toBe(null);
 
@@ -166,10 +147,10 @@ describe('load more', () => {
     const companies = container.querySelector('.companies');
     jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
     jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 200 } });
+    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold } });
     await findByText(container, 'Netease');
     jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 600);
-    fireEvent.scroll(main, { target: { scrollTop: 300 } });
+    fireEvent.scroll(main, { target: { scrollTop: 600 - 300 } });
 
     expect(queryByTestId(container, 'loading')).toBe(null);
 
