@@ -30,7 +30,7 @@ const visitors = {
   }),
 };
 export const reducer = (state, action) =>
-  visitors[action.type](state, action) || state;
+  visitors[action.type](state, action);
 
 export const initialState = {
   loading: true,
