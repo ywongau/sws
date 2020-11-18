@@ -32,10 +32,10 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
     };
   }, [state.offset, state.sortField, state.sortOrder, state.countryCode]);
 
-  const scrollContainerRef = useRef();
+  const scrollContainerRef = useRef<HTMLElement>();
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef.current as HTMLElement;
+    const scrollContainer = scrollContainerRef.current;
     const onScroll = e => {
       const content = scrollContainer.querySelector('.companies');
       if (
@@ -57,8 +57,7 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
   }, [state.totalRecords, state.companies.length]);
 
   useEffect(()=>{
-    const scrollContainer = scrollContainerRef.current as HTMLElement;
-    scrollContainer.scrollTop = 0;
+     scrollContainerRef.current.scrollTop = 0;
   }, [state.sortField, state.sortOrder, state.countryCode])
 
   const marketChanged = e => {
