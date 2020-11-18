@@ -54,19 +54,25 @@ describe('data returned', () => {
   it('can filter by country', () => {
     const { container, unmount } = render(<App />);
     const select = getByLabelText(container, 'Market');
+    const main = container.querySelector('main');
+    main.scrollTop = 10;
     fireEvent.change(select, { target: { value: 'au' } });
 
     expect(search).toHaveBeenCalledWith(0, 24, 'market_cap', 'desc', 'au');
-
+    expect(main.scrollTop).toBe(0);
+    
     unmount();
   });
   it('can sort', async () => {
     const { container, unmount } = render(<App />);
     const select = getByLabelText(container, 'Sort by');
     await findByText(container, 'Coles');
+    const main = container.querySelector('main');
+    main.scrollTop = 10;
     fireEvent.change(select, { target: { value: 'market_cap asc' } });
 
     expect(search).toHaveBeenCalledWith(0, 24, 'market_cap', 'asc', '');
+    expect(main.scrollTop).toBe(0);
 
     unmount();
   });

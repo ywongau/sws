@@ -56,6 +56,11 @@ const App: React.FunctionComponent<Props> = ({ name }) => {
     };
   }, [state.totalRecords, state.companies.length]);
 
+  useEffect(()=>{
+    const scrollContainer = scrollContainerRef.current as HTMLElement;
+    scrollContainer.scrollTop = 0;
+  }, [state.sortField, state.sortOrder, state.countryCode])
+
   const marketChanged = e => {
     const countryCode = e.target.value;
     dispatch({ type: 'countryChanged', payload: countryCode });
