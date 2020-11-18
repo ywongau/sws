@@ -73,6 +73,11 @@ describe('data returned', () => {
 });
 describe('load more', () => {
   const loadMoreThreshold = 100;
+  const fakeHeight = (element, height) =>
+    jest.spyOn(element, 'clientHeight', 'get').mockImplementation(() => height);
+  const fakeScroll = (element, scrollTop) =>
+    fireEvent.scroll(element, { target: { scrollTop } });
+
   beforeEach(() => {});
   afterEach(() => {
     search.mockReset();
@@ -86,13 +91,13 @@ describe('load more', () => {
     await findByText(container, 'Coles');
     const main = container.querySelector('main');
     const companies = container.querySelector('.companies');
-    jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
-    jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
     search.mockResolvedValue({
       data: [netease],
       meta: { total_records: 3 },
     });
-    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold } });
+    fakeHeight(main, 300);
+    fakeHeight(companies, 500);
+    fakeScroll(main, 500 - 300 - loadMoreThreshold);
 
     getByTestId(container, 'loading');
     expect(search).toHaveBeenCalledWith(2, 24, 'market_cap', 'desc', '');
@@ -105,9 +110,9 @@ describe('load more', () => {
     const { container, unmount } = render(<App />);
     const main = container.querySelector('main');
     const companies = container.querySelector('.companies');
-    jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
-    jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold - 1 } });
+    fakeHeight(main, 300);
+    fakeHeight(companies, 500);
+    fakeScroll(main, 500 - 300);
 
     expect(search.mock.calls.length).toBe(1);
 
@@ -123,9 +128,9 @@ describe('load more', () => {
     await findByText(container, 'Coles');
     const main = container.querySelector('main');
     const companies = container.querySelector('.companies');
-    jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
-    jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold - 1} });
+    fakeHeight(main, 300);
+    fakeHeight(companies, 500);
+    fakeScroll(main, 500 - 300 - loadMoreThreshold - 1);
 
     expect(queryByTestId(container, 'loading')).toBe(null);
 
@@ -145,12 +150,12 @@ describe('load more', () => {
     });
     const main = container.querySelector('main');
     const companies = container.querySelector('.companies');
-    jest.spyOn(main, 'clientHeight', 'get').mockImplementation(() => 300);
-    jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 500);
-    fireEvent.scroll(main, { target: { scrollTop: 500 - 300 - loadMoreThreshold } });
+    fakeHeight(main, 300);
+    fakeHeight(companies, 500);
+    fakeScroll(main, 500 - 300 - loadMoreThreshold);
     await findByText(container, 'Netease');
-    jest.spyOn(companies, 'clientHeight', 'get').mockImplementation(() => 600);
-    fireEvent.scroll(main, { target: { scrollTop: 600 - 300 } });
+    fakeHeight(companies, 600);
+    fakeScroll(main, 600 - 300);
 
     expect(queryByTestId(container, 'loading')).toBe(null);
 
